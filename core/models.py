@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 
@@ -32,4 +33,28 @@ class Case(models.Model):
     image_url = models.URLField(blank=True)
 
     def __str__(self):
-        return f"{self.name} - ${self.price}"
+        return f"{self.name} - ${self.price if hasattr(self, 'price') else 'N/A'}"
+
+class Human(AbstractUser):  
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name='groups',
+        blank=True,
+        help_text='The groups this user belongs to.',
+        related_name='human_set',          # ← important
+        related_query_name='human',
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name='user permissions',
+        blank=True,
+        help_text='Specific permissions for this user.',
+        related_name='human_set',          # ← important
+        related_query_name='human',
+
+    )
+
+
+    def __str__(self):
+        return self.username
+

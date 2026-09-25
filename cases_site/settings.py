@@ -127,3 +127,4 @@ MAILERS = {
     },
 }
 
+AUTH_USER_MODEL = 'core.Human'
