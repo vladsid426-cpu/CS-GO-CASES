@@ -1,15 +1,187 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Create account</title>
+    <style>
+        :root {
+            --bg-1: #020817;
+            --bg-2: #0f172a;
+            --panel: rgba(15, 23, 42, 0.84);
+            --panel-border: rgba(148, 163, 184, 0.2);
+            --input: rgba(15, 23, 42, 0.9);
+            --primary: #38bdf8;
+            --primary-strong: #0ea5e9;
+            --accent: #22c55e;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --shadow: rgba(15, 23, 42, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            background: radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 30%), linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 55%, #111827 100%);
+            color: var(--text);
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .auth-shell {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .auth-card {
+            width: min(100%, 440px);
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: 0 24px 60px var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(34, 197, 94, 0.2));
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(1.9rem, 4vw, 2.3rem);
+            line-height: 1.2;
+            letter-spacing: -0.04em;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        form {
+            margin-top: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 14px;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            background: var(--input);
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        input::placeholder {
+            color: rgba(148, 163, 184, 0.8);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.16);
+            transform: translateY(-1px);
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 100%);
+            color: #082f49;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 12px 26px rgba(14, 165, 233, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 22px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .switch-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .switch-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .auth-card {
+                padding: 26px 20px;
+                border-radius: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="auth-wrapper">
+    <div class="auth-shell">
         <div class="auth-card">
-            <h1>Register</h1>
+            <div class="brand">
+                <h1>Register</h1>
+                <p class="subtitle">Create your new account</p>
+            </div>
+
             <form method="post" action="">
+                {% csrf_token %}
+
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" autocomplete="username" placeholder="Enter your username" required>
@@ -22,124 +194,14 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Create a password" required>
                 </div>
 
-                <button type="submit">Register</button>
+                <button type="submit">Create account</button>
             </form>
 
-            <p class="switch-link" >Already have an account? <a href="{% url 'auth:login' %}">Login</a></p>
+            <p class="switch-link">Already have an account? <a href="login">Login</a></p>
         </div>
     </div>
-
-    <style>
-        :root {
-            --bg: #0f172a;
-            --card: #111827;
-            --card-border: rgba(148, 163, 184, 0.2);
-            --primary: #38bdf8;
-            --primary-hover: #0ea5e9;
-            --text: #e2e8f0;
-            --muted: #94a3b8;
-            --input: #1e293b;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #020617 0%, #111827 100%);
-            font-family: Arial, sans-serif;
-            color: var(--text);
-        }
-
-        .auth-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 24px;
-        }
-
-        .auth-card {
-            width: min(100%, 420px);
-            background: rgba(17, 24, 39, 0.96);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-            padding: 32px 28px;
-        }
-
-        h1 {
-            margin: 0 0 24px;
-            text-align: center;
-            font-size: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-            color: var(--muted);
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            background: var(--input);
-            color: var(--text);
-            outline: none;
-            font-size: 1rem;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
-        }
-
-        button {
-            width: 100%;
-            padding: 12px 16px;
-            margin-top: 8px;
-            border: none;
-            border-radius: 10px;
-            background: var(--primary);
-            color: #082f49;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        button:hover {
-            background: var(--primary-hover);
-        }
-
-        .switch-link {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--muted);
-        }
-
-        .switch-link a {
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .switch-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
 </body>
 </html>
