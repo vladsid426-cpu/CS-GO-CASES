@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Case Spinner</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #081722;
+      --bg-2: #0f1d2e;
+      --panel: rgba(15, 22, 32, 0.9);
+      --panel-2: rgba(18, 27, 37, 0.82);
+      --surface: rgba(28, 39, 52, 0.75);
+      --line: rgba(161, 186, 220, 0.14);
+      --line-strong: rgba(161, 186, 220, 0.24);
+      --text: #edf4ff;
+      --muted: #a9b9cb;
+      --muted-2: #7f8fa6;
+      --cyan: #5cd4ff;
+      --cyan-strong: #3ab8f1;
+      --gold: #f4c870;
+      --gold-strong: #efad36;
+      --btn: #1aa6e7;
+      --btn-strong: #118ed3;
+      --shadow: rgba(0, 0, 0, 0.32);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 5%, rgba(99, 132, 194, 0.14), transparent 30%),
+        radial-gradient(circle at 85% 8%, rgba(244, 200, 112, 0.08), transparent 21%),
+        linear-gradient(180deg, #071a27 0%, var(--bg) 100%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      width: min(1180px, calc(100% - 26px));
+      margin: 0 auto;
+      padding: 20px 0 54px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 18px 14px;
+      margin: 0 auto 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(8, 18, 25, 0.35);
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 14px 28px rgba(0,0,0,0.1);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      line-height: 0.85;
+      flex-shrink: 0;
+    }
+
+    .brand-word {
+      display: block;
+      font-weight: 900;
+      font-size: clamp(2rem, 2vw + 1.2rem, 3.2rem);
+      letter-spacing: -0.08em;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    .brand-word span {
+      color: var(--text);
+      margin-left: 0.08em;
+      text-shadow: 0 0 18px rgba(92, 212, 255, 0.12);
+    }
+
+    .auth {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .user-identity {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(20, 29, 40, 0.7);
+      padding: 11px 14px;
+      min-height: 52px;
+    }
+
+    .avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(84, 101, 144, 0.9), rgba(41, 50, 72, 0.9));
+      border: 1px solid rgba(255,255,255,0.12);
+      position: relative;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .avatar:before {
+      content: "";
+      position: absolute;
+      inset: 8px 9px 10px 9px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 50%;
+      opacity: 0.9;
+    }
+
+    .auth-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .auth-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 112px;
+      min-height: 46px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--line-strong);
+      background: rgba(24, 33, 45, 0.7);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .auth-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(117, 160, 216, 0.46);
+      background: rgba(30, 41, 56, 0.8);
+    }
+
+    .auth-btn.primary {
+      background: linear-gradient(180deg, rgba(29, 46, 63, 0.82), rgba(14, 24, 34, 0.82));
+      border-color: rgba(110, 150, 214, 0.35);
+    }
+
+    .main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding-top: 24px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .page-header-copy {
+      flex: 1;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-weight: 900;
+      font-size: clamp(2.1rem, 3vw, 4.2rem);
+      line-height: 1;
+      letter-spacing: -0.06em;
+      color: var(--text);
+      text-transform: uppercase;
+    }
+
+    .lead {
+      margin: 10px 0 0;
+      max-width: 660px;
+      color: rgba(209, 219, 235, 0.8);
+      font-size: 18px;
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+      font-weight: 500;
+    }
+
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 10px 16px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(12, 22, 31, 0.76);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+      margin-top: 26px;
+    }
+
+    .case-item {
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 22px 18px 18px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(25, 35, 46, 0.75), rgba(15, 22, 32, 0.7));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+      color: var(--text);
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .case-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(117, 160, 216, 0.46);
+    }
+
+    .case-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .case-rarity {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(92, 212, 255, 0.12);
+      border: 1px solid rgba(92, 212, 255, 0.32);
+      color: var(--cyan);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .case-price {
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .case-item h3 {
+      margin: 0;
+      font-size: clamp(1.75rem, 2vw, 2.4rem);
+      line-height: 1.1;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+    }
+
+    .case-item p {
+      margin: 0;
+      color: rgba(214, 224, 239, 0.82);
+      font-size: clamp(1.02rem, 1.25vw, 1.2rem);
+      line-height: 1.5;
+      letter-spacing: -0.02em;
+    }
+
+    .case-actions {
+      margin-top: auto;
+    }
+
+    .case-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: linear-gradient(180deg, var(--btn), var(--btn-strong));
+      border: 1px solid rgba(127, 204, 255, 0.32);
+      color: var(--text);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .case-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .bottom-note {
+      margin: 28px auto 0;
+      color: rgba(182, 196, 212, 0.9);
+      font-size: 15px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .case-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .lead {
+        font-size: 20px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 16px 12px;
+      }
+
+      .brand-wrap {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .auth {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .case-item {
+        min-height: 140px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand-wrap" aria-label="CS-GO Cases brand">
+        <div class="brand-word">CS-GO</div>
+        <div class="brand-word"><span>Cases</span></div>
+      </div>
+
+      <div class="auth">
+        {% if current_user.is_authenticated %}
+          <div class="user-identity">
+            <span class="avatar" aria-hidden="true"></span>
+          </div>
+        {% else %}
+          <div class="auth-actions">
+            <button class="auth-btn primary" type="button">Log in</button>
+            <button class="auth-btn" type="button">Create account</button>
+          </div>
+        {% endif %}
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="page-header">
+        <div class="page-header-copy">
+          <p class="eyebrow">Case collection</p>
+          <h1>Cases</h1>
+          <p class="lead">Browse the available drops and find the next case for your collection.</p>
+        </div>
+
+      </div>
+
+      <div class="case-grid" aria-label="Cases list">
+          <article class="case-item">
+            <div class="case-top">
+              <span class="case-rarity">Starter</span>
+              <span class="case-price">Free</span>
+            </div>
+            <div>
+              <h3>Starter Case</h3>
+              <p>Begin your collection with classic weapon finishes.</p>
+            </div>
+            <div class="case-actions">
+              <a class="case-btn" href="#">Open case</a>
+            </div>
+          </article>
+          <article class="case-item">
+            <div class="case-top">
+              <span class="case-rarity">Rare</span>
+              <span class="case-price">$7.50</span>
+            </div>
+            <div>
+              <h3>Neon Case</h3>
+              <p>Bright, bold designs for players who stand out.</p>
+            </div>
+            <div class="case-actions">
+              <a class="case-btn" href="#">Open case</a>
+            </div>
+          </article>
+          <article class="case-item">
+            <div class="case-top">
+              <span class="case-rarity">Premium</span>
+              <span class="case-price">$15</span>
+            </div>
+            <div>
+              <h3>Elite Case</h3>
+              <p>Chase premium skins and legendary rarities.</p>
+            </div>
+            <div class="case-actions">
+              <a class="case-btn" href="#">Open case</a>
+            </div>
+          </article>
+      </div>
+
+      <p class="bottom-note">Collect responsibly. Good luck opening your next case.</p>
+    </main>
+  </div>
+</body>
+</html>
