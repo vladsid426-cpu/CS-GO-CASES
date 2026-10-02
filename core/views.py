@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.contrib import messages
 
+
 def home(request):
     return render(request, "home.html")
 
@@ -40,4 +41,4 @@ def register_view(request):
 
         return redirect(success_url)
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
