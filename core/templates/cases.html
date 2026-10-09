@@ -329,6 +329,32 @@
       transform: translateY(-1px);
     }
 
+    button.case-btn { cursor: pointer; font-family: inherit; }
+
+    .roulette-source { display: none; }
+
+    .roulette-dialog {
+      width: min(760px, calc(100% - 28px));
+      padding: 28px;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      color: var(--text);
+      background: linear-gradient(145deg, #172638, #0b1621);
+      box-shadow: 0 28px 90px rgba(0,0,0,.65);
+    }
+
+    .roulette-dialog::backdrop { background: rgba(2, 8, 14, .82); backdrop-filter: blur(5px); }
+    .roulette-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .roulette-heading h2 { margin: 0; font-size: 1.6rem; }
+    .roulette-close { border: 0; background: none; color: var(--muted); font-size: 28px; cursor: pointer; }
+    .roulette-window { position: relative; overflow: hidden; margin: 24px 0 18px; border: 1px solid var(--line-strong); border-radius: 12px; background: rgba(4, 12, 20, .8); }
+    .roulette-window::before { content: ""; position: absolute; z-index: 1; left: 50%; top: 0; bottom: 0; width: 3px; background: var(--gold); box-shadow: 0 0 16px var(--gold); }
+    .roulette-track { display: flex; gap: 10px; width: max-content; min-width: max-content; padding: 14px; transform: translateX(0); will-change: transform; }
+    .roulette-item { display: grid; place-items: center; width: 132px; min-height: 100px; padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(160deg, #263c50, #142333); color: var(--text); text-align: center; font-weight: 700; }
+    .roulette-icon { display: block; margin-bottom: 6px; color: var(--gold); font-size: 24px; line-height: 1; text-shadow: 0 0 12px rgba(244, 200, 112, .45); }
+    .roulette-status { min-height: 24px; color: var(--gold); text-align: center; }
+    .roulette-actions { display: flex; justify-content: center; gap: 12px; }
+
     .bottom-note {
       margin: 28px auto 0;
       color: rgba(182, 196, 212, 0.9);
@@ -379,8 +405,10 @@
   <div class="wrap">
     <header class="topbar">
       <div class="brand-wrap" aria-label="CS-GO Cases brand">
+        <a href="{% url 'home' %}" class="brand-word">CS-GO>
         <div class="brand-word">CS-GO</div>
         <div class="brand-word"><span>Cases</span></div>
+        </a>
       </div>
 
       <div class="auth">
@@ -390,8 +418,8 @@
           </div>
         {% else %}
           <div class="auth-actions">
-            <button class="auth-btn primary" type="button">Log in</button>
-            <button class="auth-btn" type="button">Create account</button>
+            <a class="auth-btn primary" type="button" href="{% url 'login' %}">Log in</a>
+            <a class="auth-btn" type="button" href="{% url 'register' %}">Create account</a>
           </div>
         {% endif %}
       </div>
@@ -408,49 +436,211 @@
       </div>
 
       <div class="case-grid" aria-label="Cases list">
+        {% if cases %}
+          {% for case in cases %}
+            <article class="case-item">
+              <div class="case-top">
+                <span class="case-rarity">
+                  {% if case.skins.first %}
+                    {{ case.skins.first.rarity }}
+                  {% else %}
+                    Collection
+                  {% endif %}
+                </span>
+                <span class="case-price">
+                  {% if case.skins.count %}
+                    {{ case.skins.count }} skins
+                  {% else %}
+                    No skins
+                  {% endif %}
+                </span>
+              </div>
+              <div>
+                <h3>{{ case.name }}</h3>
+                <p>
+                  {% if case.skins.count %}
+                    {{ case.skins.count }} skins available in this drop.
+                  {% else %}
+                    This case is currently empty.
+                  {% endif %}
+                </p>
+              </div>
+              <div class="case-actions">
+                <button class="case-btn" type="button" data-open-roulette>Open case</button>
+              </div>
+              <div class="roulette-source" aria-hidden="true">
+                {% for skin in case.skins.all %}<span>{{ skin.name }}</span>{% empty %}<span>No skins available</span>{% endfor %}
+              </div>
+            </article>
+          {% endfor %}
+        {% else %}
           <article class="case-item">
             <div class="case-top">
-              <span class="case-rarity">Starter</span>
-              <span class="case-price">Free</span>
+              <span class="case-rarity">Covert</span>
+              <span class="case-price">18 skins</span>
             </div>
             <div>
-              <h3>Starter Case</h3>
-              <p>Begin your collection with classic weapon finishes.</p>
+              <h3>Chroma 2 Case</h3>
+              <p>18 skins available in this drop.</p>
             </div>
             <div class="case-actions">
-              <a class="case-btn" href="#">Open case</a>
+              <button class="case-btn" type="button" data-open-roulette>Open case</button>
             </div>
+            <div class="roulette-source" aria-hidden="true"><span>AK-47 | Emergency</span><span>M4A1-S | Player Two</span><span>Glock-18 | Bullet Queen</span><span>AWP | Duality</span></div>
           </article>
+
           <article class="case-item">
             <div class="case-top">
-              <span class="case-rarity">Rare</span>
-              <span class="case-price">$7.50</span>
+              <span class="case-rarity">Classified</span>
+              <span class="case-price">13 skins</span>
             </div>
             <div>
-              <h3>Neon Case</h3>
-              <p>Bright, bold designs for players who stand out.</p>
+              <h3>Operation Breakout</h3>
+              <p>13 skins available in this drop.</p>
             </div>
             <div class="case-actions">
-              <a class="case-btn" href="#">Open case</a>
+              <button class="case-btn" type="button" data-open-roulette>Open case</button>
             </div>
+            <div class="roulette-source" aria-hidden="true"><span P> P90 | Asiimov</span><span>Glock-18 | Water Elemental</span><span>USP-S | Atomic Alloy</span><span>Desert Eagle | Cobalt Disruption</span></div>
           </article>
+
           <article class="case-item">
             <div class="case-top">
-              <span class="case-rarity">Premium</span>
-              <span class="case-price">$15</span>
+              <span class="case-rarity">Restricted</span>
+              <span class="case-price">31 skins</span>
             </div>
             <div>
-              <h3>Elite Case</h3>
-              <p>Chase premium skins and legendary rarities.</p>
+              <h3>Prisma Case</h3>
+              <p>31 skins available in this drop.</p>
             </div>
             <div class="case-actions">
-              <a class="case-btn" href="#">Open case</a>
+              <button class="case-btn" type="button" data-open-roulette>Open case</button>
             </div>
+            <div class="roulette-source" aria-hidden="true"><span>M4A1-S | Player Two</span><span>Five-SeveN | Angry Mob</span><span> AUG | Momentum</span><span>AWP | Atheris</span></div>
           </article>
+
+          <article class="case-item">
+            <div class="case-top">
+              <span class="case-rarity">Industrial</span>
+              <span class="case-price">9 skins</span>
+            </div>
+            <div>
+              <h3>Glove Case</h3>
+              <p>9 skins available in this drop.</p>
+            </div>
+            <div class="case-actions">
+              <button class="case-btn" type="button" data-open-roulette>Open case</button>
+            </div>
+            <div class="roulette-source" aria-hidden="true"><span>Sport Gloves | Hedge Maze</span><span>M4A4 | The Emperor</span><span>AK-47 | Neon Rider</span><span>USP-S | Kill Confirmed</span></div>
+          </article>
+        {% endif %}
       </div>
+
+      <dialog class="roulette-dialog" id="case-roulette" aria-labelledby="roulette-title">
+        <div class="roulette-heading">
+          <h2 id="roulette-title">Case roulette</h2>
+          <button class="roulette-close" type="button" aria-label="Close roulette">&times;</button>
+        </div>
+        <div class="roulette-window"><div class="roulette-track" id="roulette-track"></div></div>
+        <p class="roulette-status" id="roulette-status" aria-live="polite">Ready to roll</p>
+        <div class="roulette-actions"><button class="case-btn" id="spin-roulette" type="button">Spin roulette</button></div>
+      </dialog>
 
       <p class="bottom-note">Collect responsibly. Good luck opening your next case.</p>
     </main>
   </div>
+  <script>
+    (() => {
+      const dialog = document.getElementById('case-roulette');
+      const track = document.getElementById('roulette-track');
+      const status = document.getElementById('roulette-status');
+      const spinButton = document.getElementById('spin-roulette');
+      const prizeIcons = ['◆', '✦', '◈', '⬟', '✧', '●', '▲', '✹'];
+      let prizes = [];
+      let infinitePrizes = [];
+      let spinId = 0;
+
+      const buildInfinitePrizes = (items) => {
+        if (!items.length) return [];
+        const repeatCount = 24;
+        const cycle = Array.from({ length: repeatCount }, () => items).flat();
+        const lead = Array.from({ length: 48 }, (_, index) => items[index % items.length]);
+        return [...lead, ...cycle];
+      };
+
+      const renderInfiniteTrack = () => {
+        track.replaceChildren();
+        infinitePrizes.forEach((name, index) => {
+          const tile = document.createElement('div');
+          tile.className = 'roulette-item';
+          const icon = document.createElement('span');
+          icon.className = 'roulette-icon';
+          icon.setAttribute('aria-hidden', 'true');
+          icon.textContent = prizeIcons[index % prizeIcons.length];
+          tile.append(icon, document.createTextNode(name));
+          track.append(tile);
+        });
+      };
+
+      document.querySelectorAll('[data-open-roulette]').forEach(button => {
+        button.addEventListener('click', () => {
+          spinId++;
+          const card = button.closest('.case-item');
+          document.getElementById('roulette-title').textContent = `${card.querySelector('h3').textContent} roulette`;
+          prizes = Array.from(card.querySelectorAll('.roulette-source span'), item => item.textContent.trim()).filter(Boolean);
+          infinitePrizes = buildInfinitePrizes(prizes);
+          renderInfiniteTrack();
+          track.style.transition = 'none';
+          track.style.transform = 'translateX(0)';
+          status.textContent = 'Ready to roll';
+          spinButton.disabled = false;
+          dialog.showModal();
+        });
+      });
+
+      document.querySelector('.roulette-close').addEventListener('click', () => dialog.close());
+      spinButton.addEventListener('click', () => {
+        if (!prizes.length) return;
+        const currentSpin = ++spinId;
+        spinButton.disabled = true;
+        status.textContent = 'Rolling...';
+
+        const cycleStart = 48;
+        const cycleLength = prizes.length * 24;
+        const travelSteps = Math.min(24, cycleLength - 1);
+        const winningIndex = cycleStart + Math.floor(Math.random() * (cycleLength - travelSteps));
+        const winner = infinitePrizes[winningIndex];
+
+        renderInfiniteTrack();
+        const tile = track.children[winningIndex];
+        if (!tile) return;
+
+        const tileWidth = tile.getBoundingClientRect().width;
+        const step = tileWidth + 10;
+        const windowWidth = dialog.querySelector('.roulette-window').clientWidth;
+        const targetDistance = winningIndex * step + (windowWidth / 2) - tileWidth / 2 - 14 + 52;
+        const targetX = -(targetDistance + 34);
+        const startX = targetX - (step * travelSteps);
+
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${startX}px)`;
+        track.offsetWidth;
+        requestAnimationFrame(() => {
+          if (currentSpin !== spinId) return;
+          track.style.transition = 'transform 9.5s cubic-bezier(.08,.72,.12,1)';
+          track.style.transform = `translateX(${targetX}px)`;
+        });
+
+        const finishSpin = event => {
+          if (currentSpin !== spinId || (event && (event.target !== track || event.propertyName !== 'transform'))) return;
+          track.removeEventListener('transitionend', finishSpin);
+          status.textContent = `You won: ${winner}`;
+          spinButton.disabled = false;
+        };
+        track.addEventListener('transitionend', finishSpin);
+        window.setTimeout(() => finishSpin(), 9800);
+      });
+    })();
+  </script>
 </body>
 </html>

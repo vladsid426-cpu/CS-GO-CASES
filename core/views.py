@@ -42,3 +42,7 @@ def register_view(request):
         return redirect(success_url)
 
     return render(request, 'registration/register.html', {'form': form})
+
+
+def cases(request):
+    return render(request, "cases.html")
