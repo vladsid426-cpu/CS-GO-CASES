@@ -208,6 +208,22 @@
             transform: translateY(0);
         }
 
+        .home-button {
+            display: block;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
+            color: var(--primary);
+            text-align: center;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .home-button:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--primary);
+        }
+
         .switch-link {
             margin: 0.5rem 0 0;
             text-align: center;
@@ -242,15 +258,24 @@
     <main class="login-card">
         <h1>Login</h1>
 
-        <form method="post" action="">
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% if form.non_field_errors %}
+                <div class="login-errors" role="alert" aria-live="polite">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <div class="field-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username" autocomplete="username" placeholder="Enter your username" required>
+                <input type="text" id="username" name="username" value="{{ form.username.value|default_if_none:'' }}" autocomplete="username" placeholder="Enter your username" required>
+                {% if form.username.errors %}<div class="login-errors" role="alert">{{ form.username.errors }}</div>{% endif %}
             </div>
 
             <div class="field-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" autocomplete="current-password" placeholder="Enter your password" required>
+                {% if form.password.errors %}<div class="login-errors" role="alert">{{ form.password.errors }}</div>{% endif %}
             </div>
 
             <div class="form-row">
@@ -258,10 +283,11 @@
                     <input type="checkbox" name="remember">
                     Remember me
                 </label>
-                <a class="forgot" href="#">Forgot password?</a>
+                <a class="forgot" href="casino.com">Forgot password?</a>
             </div>
 
             <button type="submit">Login</button>
+            <a class="home-button" href="{% url 'home' %}">Home</a>
 
             <p class="switch-link">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
         </form>

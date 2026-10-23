@@ -179,7 +179,7 @@
                 <p class="subtitle">Create your new account</p>
             </div>
 
-            <form method="post" action="">
+            <form class="auth-form" method="post" action="{% url 'register' %}">
                 {% csrf_token %}
 
                 <div class="form-group">
@@ -196,8 +196,8 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" autocomplete="new-password" placeholder="Create a password" required>
                 </div>
-
                 <button type="submit">Create account</button>
+                
             </form>
 
             <p class="switch-link">Already have an account? <a href="{% url 'login' %}">Login</a></p>

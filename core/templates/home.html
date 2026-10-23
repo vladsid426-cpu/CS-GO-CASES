@@ -62,9 +62,18 @@
         }
 
         .logout-button {
+            padding: 0.55rem 0.9rem;
             border: 1px solid #475569;
+            border-radius: 0.5rem;
             background: transparent;
+            color: #e2e8f0;
             cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .logout-button:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
         }
 
         .account-icon {
@@ -206,11 +215,15 @@
 <body>
     <header>
         <h1>CS-GO Cases</h1>
-        {% if current_user.is_authenticated %}
-        <a class="account-icon visible" href="account.html" aria-label="Account" title="Account">&#128100;</a>
+        {% if user.is_authenticated %}
+            <a class="account-icon visible" href="account.html" aria-label="Account" title="Account">&#128100;</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">Logout</button>
+            </form>
         {% else %}
-        <a class="account-link" href="{% url 'login' %}">Log in</a>
-        <a class="account-link" href="{% url 'register' %}">Create account</a>
+            <a class="account-link" href="{% url 'login' %}">Log in</a>
+            <a class="account-link" href="{% url 'register' %}">Create account</a>
         {% endif %}
     </header>
     <main>
@@ -223,15 +236,15 @@
 
         <section id="cases" class="cases" aria-label="Available cases">
             <article class="case-card">
-                <h3>Starter Case</h3>
+                <h3>Chroma 2 Case</h3>
                 <p>Begin your collection with classic weapon finishes.</p>
             </article>
             <article class="case-card">
-                <h3>Neon Case</h3>
+                <h3>Operation Breakout Case</h3>
                 <p>Bright, bold designs for players who stand out.</p>
             </article>
             <article class="case-card">
-                <h3>Elite Case</h3>
+                <h3>Prisma Case</h3>
                 <p>Chase premium skins and legendary rarities.</p>
             </article>
         </section>

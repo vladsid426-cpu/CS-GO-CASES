@@ -29,17 +29,14 @@ def home(request):
 
 def register_view(request):
     success_url = reverse_lazy('home')
-    form = UserCreationForm(request.POST or None)
-
-    if request.method == 'POST' and form.is_valid():
-        form.save()
-
-        messages.success(
-            request,
-            'Registration successful!'
-        )
-
-        return redirect(success_url)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save(commit=True)
+            messages.success(request, 'Registration successful!')
+            return redirect(success_url)
+    else:
+        form = UserCreationForm()
 
     return render(request, 'registration/register.html', {'form': form})
 
